@@ -1,0 +1,13 @@
+import { useEffect, useState } from 'react'
+import { ArrowLeft, ChevronDown, Circle, CheckCircle2 } from 'lucide-react'
+import { Link, useParams } from 'react-router-dom'
+import { QueryState } from '../components/QueryState'
+import { getSubjectDetail } from '../services/academic'
+import type { Subject, Topic, Unit } from '../types'
+
+export function SubjectDetail() {
+  const { subjectId = '' } = useParams(); const [state, setState] = useState<{ loading: boolean; error: string | null; subject: Subject | null; units: Unit[]; topics: Topic[] }>({ loading: true, error: null, subject: null, units: [], topics: [] })
+  useEffect(() => { let active = true; getSubjectDetail(subjectId).then((data) => { if (active) setState({ loading: false, error: null, ...data }) }).catch((error: unknown) => { if (active) setState((current) => ({ ...current, loading: false, error: error instanceof Error ? error.message : 'The subject could not be loaded.' })) }); return () => { active = false } }, [subjectId])
+  const topicsFor = (unitId: string) => state.topics.filter((topic) => topic.unitId === unitId)
+  return <div className="page-stack"><Link className="back-link" to="/subjects"><ArrowLeft size={16} /> Back to subjects</Link><QueryState loading={state.loading} error={state.error} isEmpty={!state.subject} emptyTitle="Subject not found" emptyDescription="This subject is not available in the connected curriculum."><section className="page-intro"><span className="eyebrow">Subject detail</span><h1>{state.subject?.name}</h1><p className="lede">{state.subject?.unitCount} units · {state.subject?.topicCount} topics · {state.subject?.progress}% complete</p></section><section className="unit-list">{state.units.map((unit) => <article className="unit-section" key={unit.id}><div className="section-heading"><div><span className="eyebrow">Unit {unit.order ?? ''}</span><h2>{unit.name}</h2></div><ChevronDown size={18} /></div><div className="topic-list">{topicsFor(unit.id).map((topic) => <Link className="topic-row" to={`/topics/${topic.id}?subjectId=${state.subject?.id}`} key={topic.id}><span className="topic-row__icon">{topic.status === 'completed' ? <CheckCircle2 size={17} /> : <Circle size={17} />}</span><span><strong>{topic.title}</strong><small>{topic.status.replace('_', ' ')} · {topic.progress}%</small></span></Link>)}</div></article>)}{state.topics.filter((topic) => !topic.unitId).map((topic) => <Link className="topic-row" to={`/topics/${topic.id}?subjectId=${state.subject?.id}`} key={topic.id}><Circle size={17} /><span><strong>{topic.title}</strong><small>{topic.status.replace('_', ' ')} · {topic.progress}%</small></span></Link>)}</section></QueryState></div>
+}

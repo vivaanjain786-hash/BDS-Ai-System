@@ -1,0 +1,9 @@
+.viva-history-list { display: grid; gap: 8px; }
+.viva-history-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); padding: 14px 0; text-decoration: none; }
+.viva-history-row > div { display: grid; gap: 5px; }
+.viva-history-row > div:last-child { justify-items: end; }
+.viva-history-row strong { color: var(--ink); font-size: 13px; }
+.viva-history-row span { color: var(--muted); font-size: 11px; }
+.viva-history-row > div:last-child strong { color: var(--green); font: 800 18px Manrope, sans-serif; }
+@media (max-width: 850px) { .viva-setup { grid-template-columns: 1fr; } }
+@media (max-width: 620px) { .viva-active__header { display: block; } .viva-progress { display: block; margin-top: 14px; } .evaluation-grid { grid-template-columns: 1fr 1fr; } .viva-report__hero > strong { position: static; display: block; margin-top: 17px; } .viva-report__hero h2 { max-width: 100%; } .viva-history-row { align-items: start; } }
