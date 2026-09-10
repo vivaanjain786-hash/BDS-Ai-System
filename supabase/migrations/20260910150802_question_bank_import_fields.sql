@@ -1,0 +1,1 @@
+alter table public.questions add column if not exists importance_score numeric, add column if not exists importance_tier text, add column if not exists importance_basis text, add column if not exists university text;;
